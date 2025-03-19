@@ -1,0 +1,255 @@
+
+/************ NAV *************/
+.navbar {
+    background-color: #232A32 !important;
+    color: #EBECE8;
+    z-index: 2;
+    height: 60px;
+}
+.navitem-c, .navitem-c label, .navitem-c li {
+    background-color: #232A32 !important;
+    color: #EBECE8;
+}
+.navitem-c a:hover{
+    color: #d2e2c2 !important;
+}
+.navitem-c-dropdown{
+    background-color: #232A32 !important;
+    color: #EBECE8 !important;
+}
+.navitem-c-dropdown-preview{
+    background-color: #2e3741 !important;
+    color: #EBECE8 !important;
+}
+.navitem-c-dropdown-approve{
+  background-color: #05c474 !important;
+  color: #EBECE8 !important;
+}
+.navitem-c-dropdown-reject{
+  background-color: #df4624 !important;
+  color: #EBECE8 !important;
+}
+.navitem-c-dropdown:hover{
+    background-color: #3b4550 !important;
+    color: #f3f4f2 !important;
+}
+
+/************ GRID *************/
+.spacer-1 {
+    height: 50px;
+}
+.spacer-2 {
+    height: 100px;
+}
+.spacer-3 {
+    height: 200px;
+}
+main {
+    background-color: #EBECE8;
+    margin: 0;
+    padding: 0;
+}
+.next {
+    background-color: #344D98;
+    color: #EBECE8;
+    font-size: large;
+}
+.next:hover {
+    border: 1px #344D98 solid;
+    /* color: #EBECE8;
+    font-size: large; */
+}
+
+/************ scrollable & clickable *************/
+.dashboard-custom-scrollbar {
+  position: relative;
+  height: 600px;
+  /* width: 100%; */
+  overflow-y: scroll;
+}
+
+.admin-table-scrollable{
+  position: relative;
+  height: 400px;
+  overflow-y: scroll;
+}
+
+.ecourse-scrollbar {
+  position: relative;
+  height: 100%;
+  /* height: 200; */
+  /* width: 100%; */
+  overflow-y: scroll;
+}
+
+.dashboard-custom-scrollbar::-webkit-scrollbar,
+.admin-table-scrollable::-webkit-scrollbar,
+.ecourse-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.dashboard-custom-scrollbar::-webkit-scrollbar-thumb,
+.admin-table-scrollable::-webkit-scrollbar-thumb,
+.ecourse-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #d8850098;
+  /* background-color: cyan; */
+  border-radius: 50px;
+}
+
+.dashboard-custom-scrollbar::-webkit-scrollbar-track,
+.admin-table-scrollable::-webkit-scrollbar-track,
+.ecourse-scrollbar::-webkit-scrollbar-track {
+  background-color: #777;
+}
+
+
+/* .my-custom-scrollbar-body{
+  padding: 2%;
+} */
+
+
+/* .dashboard-custom-scrollbar table tr:hover {
+  background: #ddd;
+  cursor: pointer;
+} */
+
+/* .dashboard-custom-scrollbar table tr td {
+  width: 300px !important;
+  text-align: left;
+  border: 1px solid #ddd;
+} */
+
+/* .my-custom-scrollbar {
+  position: relative;
+  height: 300px;
+  overflow-y: scroll;
+}
+
+.my-custom-scrollbar table tr td {
+  border: 1px solid #ddd;
+} */
+
+/* 
+table .clickable:hover {
+  background: rgb(175, 170, 170);
+  cursor: pointer;
+} */
+
+
+/************ TEXT COLORS *************/
+.text-blackish-grey{
+    color: #232A32;
+}
+.text-milky-grey{
+    color: #EBECE8;
+}
+.text-simple-grey{
+    color: #767676;
+}
+.text-hard-gold{
+    color: #af9119;
+}
+.text-gold{
+    color: #F6DD77;
+}
+.text-light-gold{
+    color: #EEE2BA;
+}
+.text-hard-blue{
+    color: #344D98;
+}
+.text-light-blue{
+    color: #4C87B6;
+}
+.clickable{
+  cursor: pointer;
+}
+.no-underline {
+  text-decoration: none;
+  background: inherit;
+  color: inherit;
+}
+
+/************ LOADING ANIMATION *************/
+
+.loading_modal {
+    background-color: transparent !important;
+    border: none;
+  }
+  
+  .loading {
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: transparent;
+    z-index: 1;
+  }
+  
+  .loading.hidden {
+    display: none;
+  }
+  
+  .wave {
+    width: 5px;
+    height: 50px;
+    background: linear-gradient(45deg, #d8850098, #fff);
+    box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
+    margin: 10px;
+    animation: wave 1s linear infinite;
+    border-radius: 20px;
+  }
+  
+  .wave:nth-child(2) {
+    animation-delay: 0.1s;
+  }
+  
+  .wave:nth-child(3) {
+    animation-delay: 0.2s;
+  }
+  
+  .wave:nth-child(4) {
+    animation-delay: 0.3s;
+  }
+  
+  .wave:nth-child(5) {
+    animation-delay: 0.4s;
+  }
+  
+  .wave:nth-child(6) {
+    animation-delay: 0.5s;
+  }
+  
+  .wave:nth-child(7) {
+    animation-delay: 0.6s;
+  }
+  
+  .wave:nth-child(8) {
+    animation-delay: 0.7s;
+  }
+  
+  .wave:nth-child(9) {
+    animation-delay: 0.8s;
+  }
+  
+  .wave:nth-child(10) {
+    animation-delay: 0.9s;
+  }
+  
+  @keyframes wave {
+    0% {
+        transform: scale(0);
+    }
+    50% {
+        transform: scale(1);
+    }
+    100% {
+        transform: scale(0);
+    }
+  }
+
+
+
+
+
+

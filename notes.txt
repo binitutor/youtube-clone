@@ -1,0 +1,588 @@
+
+-------------------------------------------------------------------
+-------------------------------------------------------------------
+-------------------- GOAL: TopHopePalvelu.com ---------------------
+-----------------                                 -----------------
+----------------- >> service advertisement site   -----------------
+----------------- >> application submissions site -----------------
+----------------- >> language lecture site        -----------------
+-----------------                                 -----------------
+-------------------------------------------------------------------
+-------------------------------------------------------------------
+-------------------------------------------------------------------
+-------------------------------------------------------------------
+
+
+
+
+
+
+
+
+---------- PRIVILEGED VIEW
+
+Views that require login
+- application status
+- lecture site/ecourse
+- admin dashboard
+- profile page
+
+
+
+
+
+
+
+---------- LECTURE UPLOAD PAGE
+thp_ecourse
+
+When course is created, it requires form fields for:
+- course name (title or subject)
+- description - one line statement
+
+COURSE TITLE:   JS 101
+DESCRIPTION:    Getting started with Javascript fundamentals.
+AUTHOR:         Biniam Alemayehu
+CREATED DATE:   2024-03-10 at 14:33:00
+COURSE STATUS:  active / inactive / scheduled to go live on date
+COURSE EXPIRATION: never / at set date
+COURSE MATERIALS:
+    ATTACHMENT TYPE: 
+      - VIDEO ATTACHMENT
+      - DOCUMENT
+      - Q & A
+Does the course have multiple sections (? more info)?
+  you can create a course with one single file uplaod. However, it is 
+  highly recomended to divide the lecture in different sections to make 
+  it more manageable for your students. Recomended setup:
+  - multiple videos with no more than 10 minutes length for each.
+  - supportive document file with notes from lecture.
+  - practice question and answer per section.
+
+** PROVIDE template to generate course
+
+
+
+** table for course creation
+** enable frontend ability to generate course from template
+** utilize the word UI lib
+** columns
+    id (auto increment)
+    course_id     50001, 50002, ... 
+    course_name   title/subject of the course
+    course_description
+    course_sections   (lists of section_id)
+    course_admin    (user_id of the teacher)
+    created_date
+    course_status   0 or 1 (active/inactive controlled by teacher)
+    enrolled_list (usernames of active students)
+
+
+************ table 6: thp_ecourse_sections
+
+** holds details on course sections 
+** columns
+    id (auto increment)
+    section_id      (random number)
+    topics          "[
+                      {
+                        topic_title: subtitle,
+                        topic_content: long sentences
+                        video_links: ["part_1.mov","part_2.mp4"],
+                        doc_links: ["part_1.pdf","part_2.pdf"]
+                        },
+                      {},
+                      {}
+                    ]"
+    course_id       50001, 50002, ... 
+
+      ---------
+  Coures example
+    Subject: AWS Practitioner
+    Description: To acquire certificate on cloud computing ...
+    Course admin: Biniam H Alemayehu
+    created date: 2024-03-10 at 14:33:00
+
+    Section 1: section title
+      topic 1: subtitle
+        topic content: sentences
+        video link
+        document link
+      topic 2: subtitle
+        topic content: sentences
+        video link
+        document link
+
+    Section 2
+      topic 1: subtitle
+        topic content: sentences
+        video link
+        document link
+
+
+
+
+
+
+---------- DUPLICATE EMAIL ENTRY: application submission
+
+--->
+when user submits application, accept it regardless of email duplicacy.
+each submission creates a temp account with email and token.
+on the success output page,
+  if user email already exists, append number before @ until unique
+  then output username = unique email
+          temp password = token
+temp password has lifeshelf of 1 week.
+  if expired, admin/reviewer can generate new temp from dashboard.
+  user must contact us to do that.
+  ** also the same if forgotten password.
+  (
+    try to authomate this process with cpanel email client.
+    see if it is possible to autosend email with pw reset link and temp token.
+
+    tutorials:
+    https://support.cpanel.net/hc/en-us/community/posts/19619940121495-Trying-to-Send-Email-from-a-PHP-Script
+    https://www.youtube.com/watch?v=NgH3sZi4wDE
+    https://my.kualo.com/knowledgebase/53_cpanel-how-tos/577_how-to-setup-a-cron-job-in-cpanel.html
+
+    )
+
+---> 
+table: users
+  right now serves as all in one. but should be ...
+  only holds unique email under username.
+      Task: add new column: username
+      Task: combine name columns into one: firstname middle last
+      Task: add a few more columns
+            gender, citizenship, prim_lang, finn_lang, 
+            user_comment
+
+--->
+when submitting applicants
+    add file path to array into file_json
+    ['file1.pdf','file2.pdf']
+
+---> 
+
+
+-------------------------------------------------------------------
+
+
+---------- TABLES CONFIGURATION: TABLES
+
+************ table 1: thp_users
+
+** capture authenticated user accounts
+    after token is used to activate the account
+
+** columns:
+    id (auto increment)
+    fullname
+    email
+    contact
+    address
+    username (unique email address)
+    temp_token
+    user_submissions [app_id1, app_id2]
+        if email address found or if user already logged in,
+        - create new record for each submission under apps
+        - append app id to this column
+    account_type    (1, 2, 3, 4, 5, 6, 7)
+        or (20001, 20002, 20003, 20004, 20005, 20006, 20007)
+        20001 = admin (developer)
+        20002 = user (activated using temp token)
+        20003 = viewer (assistant to tesfu)
+        20004 = reviewer (tesfu)
+        20005 = teacher (course admin)
+        20006 = student account (activated by course admin)
+        20007 = auditor (optional)
+    date_created    current_timestamp
+    account_status  (0 or 1 for inactive to active)
+
+
+
+
+************ table 2: thp_applications
+
+** capture application submitted by user.
+
+** columns:
+    id (auto increment)
+    app_id (generated from microsecond of current date)
+            29012394825, always unique
+    fullname
+    email
+    contact
+    address
+    gender
+    citizenship
+    prim_lang
+    finn_lang
+    user_comment
+    username (unique email)
+    temp_token
+    account_type
+    uploaded_document ['doc1.pdf','doc2.pdf']
+    date_created
+
+
+
+************ table 3: thp_activities
+
+** tracks activity from every engagement by everyone.
+** types of activities
+    action_types
+    [
+      public (for everyone):   submit_new_app, login, logout, 
+                activate_account, session_length 
+                (track session length at logout)
+
+      user:     address_change, phone_num_change, preference_change
+      viewer:   view_accounts, view_applications, view_documents
+      reviewer: manage_accounts, activate_user, deactivate_user,
+                update_status
+      admin:    ...
+      auditor:  login, logout, view_activities, view_changes
+    ]
+
+** columns:
+    id (auto increment)
+    action_date (current_timestamp)
+    username (email address if applicable)
+    action_type: keyword from actions table
+    action_detail: user account seb@example.com changed their address from [old add lane] to [new address] on 2024-03-10 at 14:33:00.
+
+
+
+
+************ table 4: thp_actions
+
+** columns
+    id (auto increment)
+    action_id           10001
+    action_keyword      session_length
+    action_description
+
+
+
+
+************ table 5: thp_ecourse
+
+** table for course creation
+** enable frontend ability to generate course from template
+** utilize the word UI lib
+** columns
+    id (auto increment)
+    course_id     50001, 50002, ... 
+    course_name   title/subject of the course
+    course_description
+    course_sections   (lists of section_id)
+    course_admin    (user_id of the teacher)
+    created_date
+    course_status   0 or 1 (active/inactive controlled by teacher)
+    enrolled_list (usernames of active students)
+
+
+************ table 6: thp_ecourse_sections
+
+** holds details on course sections 
+** columns
+    id (auto increment)
+    section_id      (random number)
+    topics          "[
+                      {
+                        topic_title: subtitle,
+                        topic_content: long sentences
+                        video_links: ["part_1.mov","part_2.mp4"],
+                        doc_links: ["part_1.pdf","part_2.pdf"]
+                        },
+                      {},
+                      {}
+                    ]"
+    course_id       50001, 50002, ... 
+
+      ---------
+  Coures example
+    Subject: AWS Practitioner
+    Description: To acquire certificate on cloud computing ...
+    Course admin: Biniam H Alemayehu
+    created date: 2024-03-10 at 14:33:00
+
+    Section 1: section title
+      topic 1: subtitle
+        topic content: sentences
+        video link
+        document link
+      topic 2: subtitle
+        topic content: sentences
+        video link
+        document link
+
+    Section 2
+      topic 1: subtitle
+        topic content: sentences
+        video link
+        document link
+      ---------
+
+
+************ table 7: thp_enrollments
+
+** for tracking enrollment
+** columns
+    id (auto increment)
+    enrollment_id   (random number)
+    course_id
+    student_id (username - unique email address)
+    enrolled_classes (null or class_id)
+    enrolled_date
+    class_status  (0 or 1 for inactive to active)
+    class_exp_date  
+     
+
+
+
+
+-------------------------------------------------------------------
+
+
+---------- BACKUP TABLES into archive
+
+** run query to take backup 
+- once a week &
+- once a month
+
+- it can be used for restore.
+
+
+
+
+-------------------------------------------------------------------
+
+
+---------- SECURITY: Log user account activity
+
+once user account is created, log these activities
+1. every time they login, track
+  username, action date and time, action type: login
+2. every time they make changes
+  username, action date and time, changed item: profile phone num, address,
+
+Example: 1
+Table: user_actions
+  user_id: 2
+  username: seb@example.com
+  action_date: 2024-03-10 14:33:00
+  action_type: login
+  action_detail: login activity detected on 2024-03-10 at 14:33:00 for user account seb@example.com.
+
+Example: 2
+Table: user_actions
+  user_id: 2
+  username: seb@example.com
+  action_date: 2024-03-10 14:33:00
+  action_type: address_change
+  action_detail: user account seb@example.com changed their address from [old add lane] to [new address] on 2024-03-10 at 14:33:00.
+
+action_types
+[
+  login, address_change, phone_num_change, 
+]
+
+
+
+
+
+
+
+-------------------------------------------------------------------
+
+
+---------- LOADING DOCUMENTS
+
+table 1: documents
+  id
+  title 
+  description
+  file_json         ["yymmdd__filename1.pdf","filename2.pdf"]
+  user_id           = id
+  date_created
+
+uuid --> generated from md5(current date in microseconds)
+
+
+
+-------------------------------------------------------------------
+
+---------- Accounts
+
+when user submits application
+                - temp account is created with username and generated token as pw
+                - user can use this info to activate the account.
+                - to activate the account, use just has to login once.
+                - instruction to set a new password
+                - token expires in one week. if so, then need to contact admin for new account
+                ** this temp account is not the same as student account
+            
+Accounts:
+            1 = admin (developer)
+            2 = user (temp account after application is submitted)
+                pw updated at first login
+            3 = viewer (assistant to tesfu)
+            4 = reviewer (tesfu)
+            5 = teacher
+            6 = student account
+                needs to be activated by admin/course admin
+                user can request activation from dashboard.
+            7 = auditor (optional)
+                to check on user activities
+
+after authenticate, route on user_portal
+- differentiate between user and admin
+- display data according to access level
+- also see if its possible to add more roles
+  user | reviewer | admin
+
+  A. user:
+  - able to view application status
+  - modify their profile information
+  - able to register for lesson
+  ** only applicants can register for lesson
+  
+  B. viewer (assistant): 
+  - able to view other people's submissions
+  - able to check status
+  
+  C. reviewer (tesfu):
+  - able to do everything under viewer
+  - able to modify application status 
+    Accepted | rejected | Needs correction
+  - can move apps to archive
+  ** turn on/off lecture contents
+  >> modify registered users (add, kick off from class )
+
+  D. admin (developer):
+  - able to do reviewer tasks 
+  + delete records permanently
+
+-------------------------------------------------------------------
+
+----------
+
+TODO: login implementation
+user_portal = home.php
+when clicked link from index, it should take to the portal page.
+- first thing is to check if login id is set. if not, send to login.php
+- if set, decide the privilge and show content
+
+under login.php
+- check if login_id is missing.
+- if yes provide the login form.
+- if no, send back to user_portal (default page) or some other page if req
+
+
+
+
+
+*********** FILE MANAGEMENT **************
+
+
+
+
+
+*********** USER ACCOUNT **************
+
+http://localhost:8888/wordpress/FileSharingSys/document_sharing/v2/login.php
+
+
+
+
+
+
+*********** AUTHENTICATION **************
+
+Step 1: index.php
+- person arrives at index.php
+- script checks if login_id session is set.
+  login_id == column: id in users table.
+- if false, person is not authenticated.
+  user is redirected to login.php
+- if true, person is authenticated (as admin or user)
+  script checks if page value is set
+  if there is specific page value, it loads that.
+  if not, it loads home.php
+
+Step 2: login.php
+- script checks if login_id session is set.
+- if true, user is redirected back to index 
+  with page value set to home
+- if false, it provides the login form
+
+Step 3: home.php
+- for authenticated user
+- provides logout button
+- if login_type==1, its an admin person
+  displays admin content
+- if login_type==2, its a user person
+  displays user content
+
+
+
+
+1. admin@admin.com
+test
+098f6bcd4621d373cade4e832627b4f6
+
+2. bini
+test
+
+3. test@sample.com
+test
+
+4. test
+test
+
+*********** DATABASE **************
+
+DB: tesfu_web
+Table 1: users
+  `id` int(30) NOT NULL,
+  `firstname` varchar(200) NOT NULL,
+  `lastname` varchar(200) NOT NULL,
+  `middlename` varchar(200) NOT NULL,
+  `contact` varchar(100) NOT NULL,
+  `address` text NOT NULL,
+  `email` varchar(200) NOT NULL,
+  `password` text NOT NULL,
+  `type` tinyint(1) NOT NULL DEFAULT 2 COMMENT '1=Admin,2=users',
+  `avatar` text NOT NULL,
+  `date_created` datetime NOT NULL DEFAULT current_timestamp()
+
+Table 2: documents
+  `id` int(11) NOT NULL,
+  `title` varchar(200) NOT NULL,
+  `description` text NOT NULL,
+  `file_json` text NOT NULL,
+  `user_id` int(30) NOT NULL,
+  `date_created` datetime NOT NULL DEFAULT current_timestamp()
+
+--
+-- Dumping data for table `documents`
+--
+
+
+Table 3: error_resp
+
+
+
+
+
+
+
+INSERT INTO `users` ('firstname','lastname','middlename','contact','address','email','password','type','avatar','date_created') VALUES
+('test','test','test','1234567890','123 road','test@test.te','098f6bcd4621d373cade4e832627b4f6', 2,'2020-11-11 09:24:40')
+
+
+
+

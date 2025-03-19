@@ -1,0 +1,119 @@
+/* -------- Video Player -------- */
+.video-container {
+    position: relative;
+    display: flex;
+    width: max-content;
+    height: max-content;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .video-container #ad_video {
+    width: 600px;
+    height: 400px;
+    border-radius: 20px;
+    border: 2px solid #222324;
+    background: #fff;
+  }
+  
+  .video-container .controls {
+    position: absolute;
+    bottom: 40px;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    opacity: 0.2;
+    transition: opacity 0.4s;
+  }
+  
+  .video-container .play-btn-control {
+    position: absolute;
+    top: 40%;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    opacity: 0;
+    transition: opacity 1s;
+  }
+  
+  .video-container .play-btn-control .fa-pase {
+    padding-right: 10%;
+  }
+  
+  .video-container:hover .controls,
+  .video-container:hover .play-btn-control {
+    opacity: 1;
+  }
+  
+  .video-container .controls button {
+    background: transparent;
+    color: #ff9e03;
+    font-weight: bolder;
+    text-shadow: 2px 1px 2px #000;
+    border: none;
+    cursor: pointer;
+  }
+  
+  
+  /* disables border highlights after button click  */
+  
+  .video-container .controls button:focus:not(:focus-visible) {
+    outline: 0;
+    box-shadow: none;
+  }
+  
+  .video-container .controls .timeline {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    border: none;
+    border-right: 3px solid #ccc;
+    border-left: 3px solid #ccc;
+  }
+  
+  .video-container .controls .timeline .bar {
+    background: rgb(1, 1, 65);
+    height: 4px;
+    flex: 1;
+  }
+  
+  .video-container .controls .timeline .bar .inner {
+    background: #ccc;
+    width: 0%;
+    height: 100%;
+  }
+  
+  .controls .fa {
+    font-size: 20px !important;
+  }
+  
+  
+  /* big play button  */
+  
+  .play-btn-control .round-button {
+    box-sizing: border-box;
+    display: block;
+    width: 80px;
+    height: 80px;
+    padding-top: 14px;
+    padding-left: 8px;
+    line-height: 20px;
+    border: 6px solid #fff;
+    border-radius: 50%;
+    text-align: center;
+    text-decoration: none;
+    background-color: rgba(0, 0, 0, 0.5);
+    font-size: 20px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    color: #ff9e03;
+    cursor: pointer;
+  }
+  
+  .round-button:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+    box-shadow: 0px 0px 10px rgba(255, 255, 100, 1);
+    text-shadow: 0px 0px 10px rgba(255, 255, 100, 1);
+  }
+  
+  
