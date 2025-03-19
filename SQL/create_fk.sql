@@ -1,0 +1,7 @@
+
+USE youtube_c1;
+
+ALTER TABLE `videos` 
+ADD CONSTRAINT `User ID FK` 
+FOREIGN KEY (`uid_fk`) REFERENCES `users`(`uid`) 
+ON DELETE CASCADE ON UPDATE CASCADE;
