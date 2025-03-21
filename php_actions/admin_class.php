@@ -19,8 +19,17 @@ Class Action {
     */
     public function __construct() {
 		ob_start();
-        include 'db_config.php';
-        $this->db = $conn;
+        // include 'db_config.php';
+        // $this->db = $conn;
+        $this->load_env();
+        $host = getenv('DB_HOST');
+        $username = getenv('DB_USER');
+        $password = getenv('DB_PASSWORD');
+        $database = getenv('DB_NAME');
+        $this->db = new mysqli($host, $username, $password, $database);
+        if ($this->db->connect_error) {
+            die("Connection failed: " . $this->db->connect_error);
+        }
 	}
     function __destruct() {
 	    $this->db->close();
@@ -131,6 +140,15 @@ Class Action {
         // animate for 1 sec and redirect to login screen
 		header("location:login.php");
         // echo '403';
+    }
+
+    private function load_env(){
+        $env =file_get_contents(__DIR__ . "/../.env");
+        $env_vals = explode("\n", $env);
+        foreach ($env_vals as $val){
+            preg_match("/([^#]+)\=(.*)/", $val, $matches);
+            if ( isset($matches[2]) ) { putenv( trim($val) ); }
+        }
     }
 }
 

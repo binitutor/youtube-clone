@@ -2,13 +2,14 @@
 
 class DBHelper {
     private $conn;
-    private $host = "localhost";
-    private $username = "admin";
-    private $password = "";
-    private $database = "youtube_c1";
     
     public function __construct() {
-        $this->conn = new mysqli($this->host, $this->username, $this->password, $this->database);
+        $this->load_env();
+        $host = getenv('DB_HOST');
+        $username = getenv('DB_USER');
+        $password = getenv('DB_PASSWORD');
+        $database = getenv('DB_NAME');
+        $this->conn = new mysqli($host, $username, $password, $database);
         if ($this->conn->connect_error) {
             die("Connection failed: " . $this->conn->connect_error);
         }
@@ -69,6 +70,15 @@ class DBHelper {
     
     public function close_connection() {
         $this->conn->close();
+    }
+
+    private function load_env(){
+        $env =file_get_contents(__DIR__ . "/../.env");
+        $env_vals = explode("\n", $env);
+        foreach ($env_vals as $val){
+            preg_match("/([^#]+)\=(.*)/", $val, $matches);
+            if ( isset($matches[2]) ) { putenv( trim($val) ); }
+        }
     }
 
 }
