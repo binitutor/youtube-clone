@@ -25,7 +25,7 @@ fileInput.addEventListener('change', (event) => {
         // document.getElementById('video-title').innerText = videoFile.name;
         // videoFile_noExt = videoFile.name.split('.').slice(0, -1).join('.');
         videoFile_noExt = videoFile.name.split('.')[0];
-        document.getElementById('video-title').value = videoFile_noExt;
+        document.getElementById('videoTitle').value = videoFile_noExt;
 
         // // set video duration
         // const videoDuration = videoFile.duration;
@@ -80,7 +80,7 @@ fileThumbnail.addEventListener('change', (event) => {
 
         // hide the thumbnail input
         document.getElementById('thumbnail').style.display = 'none';
-        
+
         // show the thumbnail
         document.getElementById('thumbnail-display').src = thumbnailUrl;
         document.getElementById('thumbnail-display').style.display = 'block';
@@ -164,41 +164,43 @@ let preview_panel = document.getElementById("preview-panel");
 let recording_log = document.getElementById("recording-log");
 let recordingTimeLimit = 15000; // 15 seconds
 
+window.onload = function () {
+    startLiveButton.addEventListener("click", () => {
+        // reveal stop button
+        stopLiveButton.removeAttribute('hidden');
+        // hide start button
+        startLiveButton.style.display = 'none';
+        // reveal recording span
+        recording_span.removeAttribute('hidden');
 
-startLiveButton.addEventListener("click",() => {
-    // reveal stop button
-    stopLiveButton.removeAttribute('hidden');
-    // hide start button
-    startLiveButton.style.display = 'none';
-    // reveal recording span
-    recording_span.removeAttribute('hidden');
+        // start recording
+        start_recording();
 
-    // start recording
-    start_recording();
+    }, false,);
 
-},false,);
+    stopLiveButton.addEventListener("click", () => {
+        // reveal start button
+        startLiveButton.removeAttribute('style');
+        startLiveButton.setAttribute('style', 'background: #224f9c;');
+        // reveal download button
+        downloadRecordingButton.removeAttribute('hidden');
+        // hide stop button
+        stopLiveButton.style.display = 'none';
+        // hide recording span
+        recording_span.style.display = 'none';
 
-stopLiveButton.addEventListener("click",() => {
-    // reveal start button
-    startLiveButton.removeAttribute('style');
-    startLiveButton.setAttribute('style', 'background: #224f9c;');
-    // reveal download button
-    downloadRecordingButton.removeAttribute('hidden');
-    // hide stop button
-    stopLiveButton.style.display = 'none';
-    // hide recording span
-    recording_span.style.display = 'none';
+        // hide recording panel
+        recording_panel.style.display = 'none';
+        // reveal preview panel
+        preview_panel.removeAttribute('hidden');
 
-    // hide recording panel
-    recording_panel.style.display = 'none';
-    // reveal preview panel
-    preview_panel.removeAttribute('hidden');
+        // stop recording
+        stop(recording_panel.srcObject);
+        loading_animation();
 
-    // stop recording
-    stop(recording_panel.srcObject);
-    loading_animation();
+    }, false,);
+}
 
-},false,);
 
 function start_recording() {
     navigator.mediaDevices
@@ -210,7 +212,7 @@ function start_recording() {
             recording_panel.srcObject = stream;
             downloadRecordingButton.href = stream;
             recording_panel.captureStream =
-            recording_panel.captureStream || recording_panel.mozCaptureStream;
+                recording_panel.captureStream || recording_panel.mozCaptureStream;
             return new Promise((resolve) => (recording_panel.onplaying = resolve));
         })
         .then(() => startLiveRecording(recording_panel.captureStream(), recordingTimeLimit))
@@ -219,7 +221,7 @@ function start_recording() {
             preview_panel.src = URL.createObjectURL(recordedBlob);
             downloadRecordingButton.href = preview_panel.src;
             downloadRecordingButton.download = "RecordedVideo.webm";
-    
+
             streamLog(
                 `Successfully recorded ${recordedBlob.size} bytes of ${recordedBlob.type} media.`,
             );
@@ -237,22 +239,22 @@ function start_recording() {
 function startLiveRecording(stream, lengthInMS) {
     let recorder = new MediaRecorder(stream);
     let data = [];
-  
+
     recorder.ondataavailable = (event) => data.push(event.data);
     recorder.start();
     streamLog(`${recorder.state} for ${lengthInMS / 1000} seconds…`);
-  
+
     let stopped = new Promise((resolve, reject) => {
-      recorder.onstop = resolve;
-      recorder.onerror = (event) => reject(event.name);
+        recorder.onstop = resolve;
+        recorder.onerror = (event) => reject(event.name);
     });
-  
+
     let recorded = delay_wait(lengthInMS).then(() => {
-      if (recorder.state === "recording") {
-        recorder.stop();
-      }
+        if (recorder.state === "recording") {
+            recorder.stop();
+        }
     });
-  
+
     return Promise.all([stopped, recorded]).then(() => data);
 }
 
@@ -270,39 +272,39 @@ function delay_wait(delayInMS) {
 // function stopLiveRecording(stream) {
 //     stream.getTracks().forEach((track) => track.stop());
 // }
-function loading_animation(){
+function loading_animation() {
     // open modal for 3 seconds
-    if($('#loadingModal').is(':hidden')){
+    if ($('#loadingModal').is(':hidden')) {
         $('#loadingModal').modal('toggle');
     }
 
     // dismiss modal after 3 seconds
-    setTimeout(function() {$('#loadingModal').modal('hide');}, 3000);
+    setTimeout(function () { $('#loadingModal').modal('hide'); }, 3000);
 }
 
-function loading_animation_short(){
+function loading_animation_short() {
     // open modal for 1 second
-    if($('#loadingModal').is(':hidden')){
+    if ($('#loadingModal').is(':hidden')) {
         $('#loadingModal').modal('toggle');
     }
 
     // dismiss modal after 1 second
-    setTimeout(function() {$('#loadingModal').modal('hide');}, 1000);
+    setTimeout(function () { $('#loadingModal').modal('hide'); }, 1000);
 }
 
 // animate progress bar
-function animateProgressBar(){
+function animateProgressBar() {
     const progressBar = document.querySelector('.progress-bar');
     let width = 0;
 
     function animateProgressBar() {
-    if (width >= 100) {
-        clearInterval(intervalId);
-    } else {
-        width++;
-        progressBar.style.width = width + '%';
-        progressBar.setAttribute('aria-valuenow', width);
-    }
+        if (width >= 100) {
+            clearInterval(intervalId);
+        } else {
+            width++;
+            progressBar.style.width = width + '%';
+            progressBar.setAttribute('aria-valuenow', width);
+        }
     }
 
     const intervalId = setInterval(animateProgressBar, 10); // Adjust the interval for animation speed
@@ -311,17 +313,17 @@ function animateProgressBar(){
 // Simulating Key Combinations (e.g., Ctrl+S):
 function simulateCombination(keys) {
     keys.forEach(key => {
-      const event = new KeyboardEvent('keydown', { 
-        key: key, 
-        ctrlKey: key === 'Control', 
-        shiftKey: key === 'Shift',
-        altKey: key === 'Alt', 
-        metaKey: key === 'Meta' 
-      });
-      document.dispatchEvent(event);
+        const event = new KeyboardEvent('keydown', {
+            key: key,
+            ctrlKey: key === 'Control',
+            shiftKey: key === 'Shift',
+            altKey: key === 'Alt',
+            metaKey: key === 'Meta'
+        });
+        document.dispatchEvent(event);
     });
 }
-  
+
 // Example: Simulate pressing Ctrl+S
 // simulateCombination(['Control', 's']); 
 
@@ -329,7 +331,7 @@ function simulateCombination(keys) {
 // simulateCombination(['Control', 'Shift', 'Delete']); 
 
 
-function delete_video(event){
+function delete_video(event) {
     var tr = event.target.parentElement.parentElement.parentElement.parentElement.parentElement;
     var video_id = tr.getAttribute('video-id');
     swal({
@@ -338,33 +340,33 @@ function delete_video(event){
         icon: "warning",
         buttons: true,
         dangerMode: true,
-      })
-      .then((willDelete) => {
-        if (willDelete) {
-            // console.log(video_id); 
-            // delete video file
+    })
+        .then((willDelete) => {
+            if (willDelete) {
+                // console.log(video_id); 
+                // delete video file
 
-            // ajax call to php script
-            $.ajax({
-                url: './php_actions/delete_video.php',
-                type: 'POST',
-                data: {video_id: video_id},
-                success: function(response){
-                    console.log(response);
-                    location.reload();
-                }
-            });
+                // ajax call to php script
+                $.ajax({
+                    url: './php_actions/delete_video.php',
+                    type: 'POST',
+                    data: { video_id: video_id },
+                    success: function (response) {
+                        console.log(response);
+                        location.reload();
+                    }
+                });
 
-            swal("Success! Your video file has been deleted!", {
-                icon: "success",
-            });
-        } else {
-            swal("Action cancelled!");
-        }
-      });
+                swal("Success! Your video file has been deleted!", {
+                    icon: "success",
+                });
+            } else {
+                swal("Action cancelled!");
+            }
+        });
 }
 
-function load_video(event){
+function load_video(event) {
     var tr = event.target.parentElement.parentElement.parentElement.parentElement.parentElement;
     var video_id = tr.getAttribute('video-id');
 }
@@ -383,8 +385,8 @@ function edit_video(event) {
     $.ajax({
         url: './php_actions/get_video.php',
         type: 'POST',
-        data: {video_id: video_id},
-        success: function(response){
+        data: { video_id: video_id },
+        success: function (response) {
             var video_info = response.split(',');
             var video_id = video_info[0];
             var video_title = video_info[1];
@@ -398,8 +400,8 @@ function edit_video(event) {
             var view_count = video_info[9];
 
             // fill the modal with video info
-            document.getElementById('video-title').value = video_title;
-            document.getElementById('video-description').value = video_description;
+            document.getElementById('videoTitle').value = video_title;
+            document.getElementById('videoDescription').value = video_description;
 
             console.log(video_info);
             // location.reload();
@@ -449,10 +451,167 @@ function convertPToInput(element) {
     var input = document.createElement("input");
     input.type = "text";
     input.value = element.textContent;
-  
+
     // Replace the <p> with the input
     element.parentNode.replaceChild(input, element);
-  
+
     // Focus on the new input
     input.focus();
 }
+
+
+/****** UPLOAD VIDEO ******/
+// window.onload = function () {
+//     document.getElementById('upload-video').onsubmit = function (event) {
+
+//         // Should be triggered on form submit
+//         //   console.log(document.getElementById('upload-video'));
+
+
+//         event.preventDefault()
+
+//         console.log('performing validation...')
+
+
+//         // alert(event.target.elements.description.value)
+//         // var formData = `
+//         //     video title: ${event.target.elements.videoTitle.value}
+//         //     video description: ${event.target.elements.videoDescription.value}
+//         //     video visibility: ${event.target.elements.visibilityChecked.value}
+//         //     video thumbnail: ${event.target.elements.thumbnail.value}
+//         //     video file: ${event.target.elements.userfile.value}`
+//         // console.log(formData);
+
+//         // const formData = new FormData(
+//         //     document.getElementById('upload-video')
+//         // );
+//         // // 2: store form data in object
+//         // const formObj = formDataToObject(formData);
+//         // // console.log(formObj);
+//         // post_obj_request(formObj)
+
+//         // post_obj_request(formData)
+//         return false; // end prevent!
+//     }
+// }
+
+function upload_video(e) {
+    e.preventDefault();
+    console.log('uploading...')
+    console.log(e)
+    // ./php_actions/upload.php
+    // perform validation
+    // var videoform = document.getElementById("upload-video");
+    // console.log(videoform)
+    // post_obj_request(videoform)
+}
+
+function post_str_request(userData_str) {
+    var xmlhttp = new XMLHttpRequest();
+    var url = 'upload.php';
+    var params = 'orem=ipsum&name=binny';
+    xmlhttp.open('POST', url, true);
+
+    //Send the proper header information along with the request
+    xmlhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    xmlhttp.onreadystatechange = function () {//Call a function when the state changes.
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+            alert(xmlhttp.responseText);
+        }
+    }
+    xmlhttp.send(params);
+}
+
+
+function formDataToObject(formData) {
+    const normalizeValues = (values) => (values.length > 1) ? values : values[0];
+    const formElemKeys = Array.from(formData.keys());
+
+    return Object.fromEntries(
+        // store array of values or single value for element key
+        formElemKeys.map(key => [key, normalizeValues(formData.getAll(key))])
+    );
+}
+
+
+function post_obj_request(userData) {
+    const url = "./php_actions/upload.php";
+
+    // construct obj to form data 
+    const videoFormData = new FormData();
+    // const videoFormData = new Object();
+    for (const key in userData) {
+        if (userData.hasOwnProperty(key)) {
+            // console.log(key, userData[key])
+            // videoFormData.append(key, userData[key]);
+            videoFormData[key] = userData[key];
+        }
+    }
+    console.log(videoFormData)
+
+
+
+    // video title: ${event.target.elements.videoTitle.value}
+    // const userData = {
+    //     name: 'John Doe',
+    //     age: 30
+    // };
+    fetch(url, {
+        method : "POST",
+        // headers: {
+        //     'Content-Type': 'application/json' // Set the content type to JSON
+        // },
+        // body: videoFormData,
+        // body: new FormData(videoFormData),
+        body: JSON.stringify(videoFormData)
+    })
+    .then(
+        response => response.text()
+        // response => {
+        //     if (!response.ok) {
+        //         throw new Error('Network response was not ok ' + response.statusText);
+        //     }
+        //     return response.json(); // Parse the JSON from the response
+        // }
+    )
+    // .then(data => {
+    //     console.log('Success:', data); // Log the response data
+    // }) 
+    .then( html => {
+        console.log(html)
+        // dismiss the modal
+        // let myModal = new bootstrap.Modal(document.getElementById('uploadModal'), {});
+        // myModal.toggle();
+        // document.getElementById('uploadModal').setAttribute('data-dismiss', 'modal');
+        // document.getElementById('uploadModal').click();
+        $('#uploadModal').modal('toggle')
+        document.getElementById('test-out').innerHTML = html
+    })
+    .catch(error => {
+        console.error('Error:', error); // Log any errors
+    });
+}
+
+
+function get_request(pageURL) {
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.onload = function () {
+        if (this.status == 200) {
+            console.log('uploaded successfully!')
+        }
+    }
+    xmlhttp.open('GET', './php_actions/upload.php?user_id=' + 'myid');
+    xmlhttp.send();
+}
+
+
+
+
+
+
+
+
+
+
+
+

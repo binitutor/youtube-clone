@@ -72,83 +72,105 @@ function update_database(){
 }
 
 // ************ GET USER INFO FROM SESSION ************
-if(isset($_SESSION['login_uid'])){ // authenticated
-    // echo '
-    //     Login ID: '.$_SESSION['login_uid'].'<br>
-    //     Username: '.$_SESSION['login_name'].'<br>
-    //     User: '.$_SESSION['full_name'].'<br>
-    //     Email: '.$_SESSION['login_email'].'<br>
-    //     Profile URL: '.$_SESSION['login_ppurl'].'<br>
-    //     Created date: '.$_SESSION['login_created_date'].'<br>
-    // ';
+
+echo 'userfile = ' . $_POST['userfile'] . "<br>";
+echo 'videoTitle = ' . $_POST['videoTitle'] . "<br>";
+echo 'visibility = ' . $_POST['visibility'] . "<br>";
+echo 'schedule = ' . $_POST['schedule'] . "<br>";
+echo 'thumbnail = ' . $_POST['thumbnail'] . "<br>";
+echo 'videoDescription = ' . $_POST['videoDescription'] . "<br>";
+
+// if(isset($_SESSION['login_uid'])){ // authenticated
+//     // echo '
+//     //     Login ID: '.$_SESSION['login_uid'].'<br>
+//     //     Username: '.$_SESSION['login_name'].'<br>
+//     //     User: '.$_SESSION['full_name'].'<br>
+//     //     Email: '.$_SESSION['login_email'].'<br>
+//     //     Profile URL: '.$_SESSION['login_ppurl'].'<br>
+//     //     Created date: '.$_SESSION['login_created_date'].'<br>
+//     // ';
     
-    // echo 'title: ' . $title . '<br>
-    // description: ' . $description . '<br>
-    // visibility: ' . $visibility . '<br>
-    // scheduled: ' . $scheduled . '<br>
-    // thumbnail: ' . basename($thumbnail['name']) . '<br>
-    // ';
+//     // echo 'title: ' . $title . '<br>
+//     // description: ' . $description . '<br>
+//     // visibility: ' . $visibility . '<br>
+//     // scheduled: ' . $scheduled . '<br>
+//     // thumbnail: ' . basename($thumbnail['name']) . '<br>
+//     // ';
 
-    // ************ GET USER INFO FROM SESSION ************
-    $uploader_id = $_SESSION['login_uid'];
-    $uploader_name = $_SESSION['full_name']; // $_SESSION['login_name']
-    $uploader_email = $_SESSION['login_email'];
-    $uploader_ppurl = $_SESSION['login_ppurl'];
-    $uploader_created_date = $_SESSION['login_created_date'];
+//     // ************ GET USER INFO FROM SESSION ************
+//     $uploader_id = $_SESSION['login_uid'];
+//     $uploader_name = $_SESSION['full_name']; // $_SESSION['login_name']
+//     $uploader_email = $_SESSION['login_email'];
+//     $uploader_ppurl = $_SESSION['login_ppurl'];
+//     $uploader_created_date = $_SESSION['login_created_date'];
     
-    // ************ GET VIDEO INFO FROM FORM ************
-    $video_title = $_POST['video-title'];
-    $description = $_POST['description'];
-    // $tags = $_POST['tags'];
-    $video = $_FILES['userfile'];
-    $visibility = $_POST['visibility']; // on or null
-    $scheduled = $_POST['schedule'];
-    $thumbnail = $_FILES['thumbnail'];
+//     // ************ GET VIDEO INFO FROM FORM ************
+//     if ($_SERVER["REQUEST_METHOD"] == "POST"){
+//         // foreach ($_POST as $key => $value) {
+//         //     echo htmlspecialchars($key) . ": " . htmlspecialchars($value) . "\n";
+//         // }
+//         echo 'success';
+//         echo 'description = ' . $_POST['description'] . "\n";
+//         // echo 'video-title = ' . $_POST['video-title'] . "\n";
+//         // echo 'visibility = ' . $_POST['visibility'] . "\n";
+//         // echo 'schedule = ' . $_POST['schedule'] . "\n";
+//         // echo 'thumbnail = ' . $_POST['thumbnail'] . "\n";
+//         // echo 'userfile = ' . $_FILES['userfile'] . "\n";
     
-    if (isset ( $video )) {
+//         // $video_title = $_POST['video-title'];
+//         // $description = $_POST['description'];
+//         // // $tags = $_POST['tags'];
+//         // $video = $_FILES['userfile'];
+//         // $visibility = $_POST['visibility']; // on or null
+//         // $scheduled = $_POST['schedule'];
+//         // $thumbnail = $_FILES['thumbnail'];
+        
+//         // if (isset ( $video )) {
+    
+//         //     // ************ UPLOAD VIDEO ************
+//         //     $video_upload_info = upload_video( $video, $video_title );
+//         //     $video_upload_status = $video_upload_info['status']; // true or false
+//         //     $video_upload_feedback = $video_upload_info['feedback'];
+//         //     $video_upload_url = $video_upload_info['url'];
+//         //     // echo $upload_feedback;
+    
+//         //     // ************ UPLOAD THUMBNAIL ************
+//         //     if (isset ( $thumbnail )){
+//         //         $thumbnail_upload_info = upload_thumbnail( $thumbnail );
+//         //         $thumbnail_upload_status = $thumbnail_upload_info['status'];
+//         //         $thumbnail_upload_feedback = $thumbnail_upload_info['feedback'];
+//         //         $thumbnail_upload_url = $thumbnail_upload_info['url'];
+//         //     } else {    
+//         //         $thumbnail_upload_status = false;
+//         //         $thumbnail_upload_feedback = 'Thumbnail not uploaded!';
+//         //         $thumbnail_upload_url = './uploads/thumbnails/default_thumbnail.png';   
+//         //     }
+    
+//         //     // ************ UPDATE DATABASE ************
+//         //     // update_database()
+//         //     include_once './db_helper.php';
+//         //     $db = new DBHelper();
+//         //     $query = $db->set_query(
+//         //         'SQL_CREATE_VIDEO', 
+//         //         array($video_title, $description, $video_upload_url, 240,
+//         //             $uploader_id, $thumbnail_upload_url)
+//         //     );
+//         //     $result = $db->execute_query($query);
+//         //     $db->close_connection();
+    
+//         //     // ************ REDIRECT TO STUDIO ************
+//         //     // then send back to studio and append the new video row to the table top
+//         //     header('Location: ../yt_studio.php');
+//         // }
+//     }
 
-        // ************ UPLOAD VIDEO ************
-        $video_upload_info = upload_video( $video, $video_title );
-        $video_upload_status = $video_upload_info['status']; // true or false
-        $video_upload_feedback = $video_upload_info['feedback'];
-        $video_upload_url = $video_upload_info['url'];
-        // echo $upload_feedback;
-
-        // ************ UPLOAD THUMBNAIL ************
-        if (isset ( $thumbnail )){
-            $thumbnail_upload_info = upload_thumbnail( $thumbnail );
-            $thumbnail_upload_status = $thumbnail_upload_info['status'];
-            $thumbnail_upload_feedback = $thumbnail_upload_info['feedback'];
-            $thumbnail_upload_url = $thumbnail_upload_info['url'];
-        } else {    
-            $thumbnail_upload_status = false;
-            $thumbnail_upload_feedback = 'Thumbnail not uploaded!';
-            $thumbnail_upload_url = './uploads/thumbnails/default_thumbnail.png';   
-        }
-
-        // ************ UPDATE DATABASE ************
-        // update_database()
-        include_once './db_helper.php';
-        $db = new DBHelper();
-        $query = $db->set_query(
-            'SQL_CREATE_VIDEO', 
-            array($video_title, $description, $video_upload_url, 240,
-                $uploader_id, $thumbnail_upload_url)
-        );
-        $result = $db->execute_query($query);
-        $db->close_connection();
-
-        // ************ REDIRECT TO STUDIO ************
-        // then send back to studio and append the new video row to the table top
-        header('Location: ../yt_studio.php');
-    }
     
 
 
-} else {
-    echo '<h1>Not authenticated! Redirecting to login page in 4 seconds...</h1>';
-}
+// } else {
+//     echo '<h1>Not authenticated! Redirecting to login page in 4 seconds...</h1>';
+// }
 
-
+//     
 
 ?>
